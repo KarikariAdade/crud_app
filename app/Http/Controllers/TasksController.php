@@ -10,6 +10,8 @@ use App\Tasks;
 //Also, you have to import the validation facade. Thats what you'll use to validate your form
 use Illuminate\Support\Facades\Validator;
 
+//Import the paginator to use paginators in your pages
+use Illuminate\Pagination\Paginator;
 class TasksController extends Controller
 {
     /**
@@ -21,7 +23,7 @@ class TasksController extends Controller
     {
       //Remember, always capitalize your model names
     //   $tasks = tasks::all();
-    $tasks = Tasks::all();
+    $tasks = Tasks::paginate(2);
 
       return view('tasks.index', compact('tasks'));
 
@@ -67,7 +69,7 @@ class TasksController extends Controller
                 'mobile_number' => $request->phone,
                 'body' => $request->description,
             ]);
-            return redirect()->route('task.indexs');
+            return redirect()->route('tasks.index');
         }
         //Always capitalize your model names, else your codes may not work
        
@@ -109,7 +111,9 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        
+        //This is where you view the task details. First of all, you have to fetch the task with the id that is passed
+        $task = Tasks::findOrFail($id);
+        return view('tasks.show', compact('task'));
     }
 
     /**
@@ -120,7 +124,9 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        return view('tasks.edit');
+        //Fetch the task id that you want to edit
+        $task = Tasks::findOrFail($id);
+        return view('tasks.edit', compact('task'));
     }
 
     /**
