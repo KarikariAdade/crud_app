@@ -46,4 +46,4 @@ Route::get('/home', 'HomeController@index')->name('home');
     'index'=>'tasks.index',
      'edit'=>'tasks.edit',
     'create'=>'tasks.create',
- ]]);
+ ]])->middleware('auth');

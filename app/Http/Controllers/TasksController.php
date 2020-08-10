@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+// use App\tasks;
+//Always Capitalize your model names, it should be use App\Tasks; instead
+use App\Tasks;
+
+//Also, you have to import the validation facade. Thats what you'll use to validate your form
+use Illuminate\Support\Facades\Validator;
 
 class TasksController extends Controller
 {
@@ -13,7 +19,12 @@ class TasksController extends Controller
      */
     public function index()
     {
-        return view('tasks.index');
+      //Remember, always capitalize your model names
+    //   $tasks = tasks::all();
+    $tasks = Tasks::all();
+
+      return view('tasks.index', compact('tasks'));
+
     }
 
     /**
@@ -23,7 +34,9 @@ class TasksController extends Controller
      */
     public function create()
     {
+        
         return view('tasks.create');
+       
     }
 
     /**
@@ -34,7 +47,58 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Do some research on form validations if you don't understand what I've done
+        $validate_fields = Validator::make($request->all(),[
+            'title' => ['required', 'min: 3'],
+            'email' => ['required', 'email'],
+            'phone' => ['required', 'min: 10'],
+            'description' => ['required', 'min: 30']
+        ]);
+
+        //Below is an example of an if statement
+        if($validate_fields->fails()){
+            //If validation fails, return to the form page with the validation errors
+            return back()->withErrors($validate_fields);
+        }else{
+            //If fields are validated, add to database and redirect user
+            Tasks::create([
+                'title' => $request->title,
+                'email' => $request->email,
+                'mobile_number' => $request->phone,
+                'body' => $request->description,
+            ]);
+            return redirect()->route('task.indexs');
+        }
+        //Always capitalize your model names, else your codes may not work
+       
+        // $Objtasks = new tasks();
+
+        // $Objtasks = new Tasks();
+        
+        // //Try to also space out your codes for clarity
+        // $Objtasks->title = $request->input('title');
+        // $Objtasks->body = $request->input('body');
+        // $Objtasks->email = $request->input('email');
+        // $Objtasks->mobilenumber = $request->input('mobilenumber');
+         
+        
+        // if($Objtask->save())
+        //    { "your new task is saved"}
+        //      else
+               
+        //       {" ooppsss.. something went wrong"}
+        
+
+        //The if statement is like this:
+
+            // if ($Objtasks->save()) {
+            //     return "Task saved";
+            // } else {
+            //     return "There is an error somewhere";
+            // }
+            
+        // return redirect()->route('tasks.index');
+               
     }
 
     /**
