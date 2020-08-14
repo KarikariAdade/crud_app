@@ -7,15 +7,18 @@
         <div class="card-header"> </div>
         <div class="card-body">
           <h1 class="display-3">update a task</h1>
-          @if ($errors->any())
+          @if ($errors->all())
           <div class="alert alert-danger">
             <ul>
-              @foreach($errors as $error)
-              <li><p> {{$error}}</p></li><br>
-              @endforeach
+             { @foreach($errors as $error)
+              <li> {{$error->first()}}</li><br>
+              @endforeach}
 
             </ul>
           </div>
+          @endif
+          @if(Session::has('update_success'))
+          <p class="alert alert-success">{{session('update_success')}}</p>
           @endif
           <form method="POST" action="{{route('tasks.update', $task->id)}}">
             @method('PATCH')

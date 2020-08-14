@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 //Import the paginator to use paginators in your pages
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Session;
 class TasksController extends Controller
 {
     /**
@@ -126,7 +127,8 @@ class TasksController extends Controller
                 'mobile_number' => $request->phone,
                 'body' => $request->body,
             ]);
-            return redirect()->route('tasks.index');
+            Session::flash('update_success', 'Task has been updated successfully');
+            return back();
         }
     }
 
@@ -140,6 +142,7 @@ class TasksController extends Controller
     {
         $task = Tasks::findOrFail($id);
         $task->delete();
+        Session::flash('delete_success', 'Task has been deleted successfully');
         return back();
     }
 }
