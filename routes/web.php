@@ -48,3 +48,4 @@ Route::get('/home', 'HomeController@index')->name('home');
     'create' => 'tasks.create',
     'show' => 'tasks.show',
  ]])->middleware('auth');
+Route::get('tasks/delete/{id}', 'TasksController@destroy')->name('tasks.delete');

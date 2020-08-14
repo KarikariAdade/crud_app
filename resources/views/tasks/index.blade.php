@@ -23,7 +23,7 @@
                             <td style="display: inline-flex;">
                                 <a class="btn btn-primary mr-1" href="{{route('tasks.show', $task->id)}}" role="button">View</a>
                                 <a class="btn btn-info mr-1" href="{{route('tasks.edit', $task->id)}}" role="button">Edit</a>
-                                <a class="btn btn-danger" href="#" role="button">Delete</a>
+                                <a class="btn btn-danger" href="{{route('tasks.delete', $task->id)}}" role="button">Delete</a>
                             </td>
                         </tr>
                          @endforeach
