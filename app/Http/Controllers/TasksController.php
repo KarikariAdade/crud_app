@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use App\tasks;
-//Always Capitalize your model names, it should be use App\Tasks; instead
 use App\Tasks;
 
-//Also, you have to import the validation facade. Thats what you'll use to validate your form
 use Illuminate\Support\Facades\Validator;
-
-//Import the paginator to use paginators in your pages
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ria;
+
+
 class TasksController extends Controller
 {
     /**
@@ -22,9 +21,7 @@ class TasksController extends Controller
      */
     public function index()
     {
-      //Remember, always capitalize your model names
-    //   $tasks = tasks::all();
-    $tasks = Tasks::paginate(10);
+    $tasks = Tasks::orderBy('id','desc')->paginate(10);
 
       return view('tasks.index', compact('tasks'));
 
@@ -58,18 +55,29 @@ class TasksController extends Controller
             'description' => ['required', 'min: 30']
         ]);
 
-        //Below is an example of an if statement
         if($validate_fields->fails()){
-            //If validation fails, return to the form page with the validation errors
             return back()->withErrors($validate_fields);
         }else{
-            //If fields are validated, add to database and redirect user
             Tasks::create([
                 'title' => $request->title,
                 'email' => $request->email,
                 'mobile_number' => $request->phone,
                 'body' => $request->description,
             ]);
+
+            $data=[
+                'title'=>$request->full_name,
+                'email'=>$request->email,
+                'body'=>$request->description,
+                'mobile_number'=>$request->phone,
+            ];
+
+            Mail::send('Email.mail', $data ,function($message) use ($data){ 
+                // $message->from('juniorlecrae@gmail.com', 'Nasaria Mumuni');
+              $message->to('juniorlecrae@gmail.com', 'Karikari Adade')
+              ->subject("You created a task named: ". $data['title']);
+            });
+            Session::flash('task_success', 'Task has been created successfully');
             return redirect()->route('tasks.index');
         }
         
@@ -84,7 +92,6 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        //This is where you view the task details. First of all, you have to fetch the task with the id that is passed
         $task = Tasks::findOrFail($id);
         return view('tasks.show', compact('task'));
     }
@@ -127,6 +134,7 @@ class TasksController extends Controller
                 'mobile_number' => $request->phone,
                 'body' => $request->body,
             ]);
+            
             Session::flash('update_success', 'Task has been updated successfully');
             return back();
         }

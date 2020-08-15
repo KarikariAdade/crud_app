@@ -7,6 +7,9 @@
             @if(Session::has('delete_success'))
             <p class="alert alert-success">{{session('delete_success')}}</p>
             @endif
+            @if(Session::has('task_success'))
+            <p class="alert alert-success">{{session('task_success')}}</p>
+            @endif
             <div class="card">
                  <table class="table table-striped table-bordered">
                      <thead>
